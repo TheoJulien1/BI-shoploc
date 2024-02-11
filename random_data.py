@@ -1,7 +1,7 @@
-import psycopg2
 import random
+
 import names
-import datetime
+import psycopg2
 from faker import Faker
 
 conn = psycopg2.connect(
@@ -59,7 +59,7 @@ def insert_data():
     conn.commit()
 
 
-for i in range(1):
+for i in range(100000):
     insert_data()
 
 cur.close()
