@@ -33,5 +33,62 @@ CREATE TABLE customer(
 CREATE TABLE sale(
     id SERIAL PRIMARY KEY,
     id_customer integer,
+    id_shop integer,
+    id_product integer,
+    quantity integer,
+    total_cents_price float,
+    points_earned integer,
+    FOREIGN KEY (id_customer) references customer(id),
+    FOREIGN KEY (id_product) references product(id),
+    FOREIGN KEY (id_shop) references shop(id)
 
-)
+);
+
+CREATE TABLE customer_log(
+    id serial PRIMARY KEY,
+    id_customer integer,
+    id_time integer,
+    connection_time float,
+    FOREIGN KEY (id_customer) references customer(id),
+    FOREIGN KEY (id_time) references time(id)
+);
+
+CREATE TABLE consultation(
+    id SERIAL PRIMARY KEY,
+    id_time integer,
+    id_product integer,
+    nb_consultations integer,
+    FOREIGN KEY (id_time) references time(id),
+    FOREIGN KEY (id_product) references product(id)
+);
+
+CREATE TABLE vfp_status(
+    id SERIAL PRIMARY KEY,
+    id_customer integer,
+    id_time integer,
+    start_time date,
+    end_time date,
+    perk_claimed integer,
+    FOREIGN KEY (id_customer) references customer(id),
+    FOREIGN KEY (start_time) references time(date),
+    FOREIGN KEY (end_time) references  time(date)
+);
+
+CREATE TABLE gift_purchase(
+    id SERIAL PRIMARY KEY,
+    id_time integer,
+    id_customer integer,
+    id_shop integer,
+    points_price integer,
+    FOREIGN KEY (id_time) references time(id),
+    FOREIGN KEY (id_customer) references customer(id),
+    FOREIGN KEY (id_shop) references shop(id)
+);
+
+CREATE TABLE retailer_registration(
+    id SERIAL PRIMARY KEY,
+    id_time integer,
+    id_shop integer,
+    FOREIGN KEY (id_time) references time(id),
+    FOREIGN KEY (id_shop) references shop(id)
+);
