@@ -66,12 +66,12 @@ CREATE TABLE vfp_status(
     id SERIAL PRIMARY KEY,
     id_customer integer,
     id_time integer,
-    start_time date,
-    end_time date,
+    start_time integer,
+    end_time integer,
     perk_claimed integer,
     FOREIGN KEY (id_customer) references customer(id),
-    FOREIGN KEY (start_time) references time(date),
-    FOREIGN KEY (end_time) references  time(date)
+    FOREIGN KEY (start_time) references time(id),
+    FOREIGN KEY (end_time) references  time(id)
 );
 
 CREATE TABLE gift_purchase(
@@ -92,3 +92,6 @@ CREATE TABLE retailer_registration(
     FOREIGN KEY (id_time) references time(id),
     FOREIGN KEY (id_shop) references shop(id)
 );
+
+
+SELECT * FROM customer;
