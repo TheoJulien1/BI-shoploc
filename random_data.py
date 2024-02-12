@@ -1,19 +1,8 @@
 import random
-from math import ceil, floor
-
 import names
 import psycopg2
 from faker import Faker
-
-conn = psycopg2.connect(
-    dbname="postgres",
-    user="postgres",
-    password="mysecretpassword",
-    host="localhost"
-)
-
-cur = conn.cursor()
-fake = Faker()
+from math import floor
 
 
 def generate_random_phone_number():
@@ -50,30 +39,36 @@ def getProductPrice(idProduct):
     return productPrice[0]
 
 
-def insert_data_dimensions():
-    # Insert data in customer
-    cur.execute("INSERT INTO customer (first_name, last_name, birth_date, phone_number) "
-                "VALUES (%s, %s, %s, %s)",
-                (names.get_first_name(), names.get_last_name(), fake.date(),
-                 generate_random_phone_number()))
-    conn.commit()
+def insert_shop(nbRow):
+    for i in range(nbRow):
+        cur.execute("INSERT INTO shop (name, description, type)"
+                    "VALUES (%s, %s, %s)",
+                    (fake.word(), fake.text(max_nb_chars=100), fake.word()))
+        conn.commit()
 
-    cur.execute("INSERT INTO product (name, description, cents_price)"
-                "VALUES (%s, %s, %s)",
-                (fake.word(), fake.text(max_nb_chars=100), round(random.uniform(0.0, 100.0), 2)))
-    conn.commit()
 
-    cur.execute("INSERT INTO shop (name, description, type)"
-                "VALUES (%s, %s, %s)",
-                (fake.word(), fake.text(max_nb_chars=100), fake.word()))
-    conn.commit()
+def insert_product(nbRow):
+    for i in range(nbRow):
+        cur.execute("INSERT INTO product (name, description, cents_price)"
+                    "VALUES (%s, %s, %s)",
+                    (fake.word(), fake.text(max_nb_chars=100), round(random.uniform(0.0, 100.0), 2)))
+        conn.commit()
+
+
+def insert_customer(nbRow):
+    for i in range(nbRow):
+        cur.execute("INSERT INTO customer (first_name, last_name, birth_date, phone_number) "
+                    "VALUES (%s, %s, %s, %s)",
+                    (names.get_first_name(), names.get_last_name(), fake.date(),
+                     generate_random_phone_number()))
+        conn.commit()
 
 
 def insert_data_facts():
     idProduct = get_random_product_id()
     price = getProductPrice(idProduct)
     qty = random.randint(1, 10)
-    total_price = round(qty*price, 2)
+    total_price = round(qty * price, 2)
     cur.execute("INSERT INTO sale (id_customer,id_shop,id_product, quantity, total_cents_price,points_earned)"
                 "VALUES (%s,%s,%s,%s,%s,%s)",
                 (get_random_customer_id(),
@@ -85,10 +80,19 @@ def insert_data_facts():
     conn.commit()
 
 
-# for i in range(100):
-# insert_data_dimensions()
+if __name__ == "__main__":
+    conn = psycopg2.connect(
+        dbname="postgres",
+        user="postgres",
+        password="mysecretpassword",
+        host="localhost"
+    )
+    cur = conn.cursor()
+    fake = Faker()
 
-insert_data_facts()
+    insert_shop(100)
+    insert_product(100)
+    insert_customer(100)
 
-cur.close()
-conn.close()
+    cur.close()
+    conn.close()
