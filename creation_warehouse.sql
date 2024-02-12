@@ -48,7 +48,7 @@ CREATE TABLE customer_log(
     id serial PRIMARY KEY,
     id_customer integer,
     id_time integer,
-    connection_time float,
+    connection_time interval SECOND,
     FOREIGN KEY (id_customer) references customer(id),
     FOREIGN KEY (id_time) references time(id)
 );
@@ -92,6 +92,3 @@ CREATE TABLE retailer_registration(
     FOREIGN KEY (id_time) references time(id),
     FOREIGN KEY (id_shop) references shop(id)
 );
-
-
-SELECT * FROM customer;
