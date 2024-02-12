@@ -34,6 +34,12 @@ def get_random_customer_id():
     return random_id[0]
 
 
+def get_random_time_id():
+    cur.execute('SELECT id from time ORDER BY random() LIMIT 1')
+    random_id = cur.fetchone()
+    return random_id[0]
+
+
 def getProductPrice(idProduct):
     cur.execute('SELECT cents_price FROM product WHERE id = %s', (idProduct,))
     productPrice = cur.fetchone()
@@ -81,6 +87,11 @@ def insert_sale(nbRow):
                      floor(total_price)))
         conn.commit()
 
+
+def insert_cutomer_log():
+    id_customer = get_random_customer_id()
+    id_time = get_random_time_id()
+    connection_time = random.uniform(10.5, 75.5)
 
 if __name__ == "__main__":
     conn = psycopg2.connect(
