@@ -1,8 +1,9 @@
 import random
+from math import floor
+
 import names
 import psycopg2
 from faker import Faker
-from math import floor
 
 
 def generate_random_phone_number():
@@ -64,20 +65,21 @@ def insert_customer(nbRow):
         conn.commit()
 
 
-def insert_data_facts():
-    idProduct = get_random_product_id()
-    price = getProductPrice(idProduct)
-    qty = random.randint(1, 10)
-    total_price = round(qty * price, 2)
-    cur.execute("INSERT INTO sale (id_customer,id_shop,id_product, quantity, total_cents_price,points_earned)"
-                "VALUES (%s,%s,%s,%s,%s,%s)",
-                (get_random_customer_id(),
-                 get_random_shop_id(),
-                 idProduct,
-                 qty,
-                 total_price,
-                 floor(total_price)))
-    conn.commit()
+def insert_sale(nbRow):
+    for i in range(nbRow):
+        idProduct = get_random_product_id()
+        price = getProductPrice(idProduct)
+        qty = random.randint(1, 10)
+        total_price = round(qty * price, 2)
+        cur.execute("INSERT INTO sale (id_customer,id_shop,id_product, quantity, total_cents_price,points_earned)"
+                    "VALUES (%s,%s,%s,%s,%s,%s)",
+                    (get_random_customer_id(),
+                     get_random_shop_id(),
+                     idProduct,
+                     qty,
+                     total_price,
+                     floor(total_price)))
+        conn.commit()
 
 
 if __name__ == "__main__":
@@ -90,9 +92,13 @@ if __name__ == "__main__":
     cur = conn.cursor()
     fake = Faker()
 
+    # Insert in dimension tables
     insert_shop(100)
     insert_product(100)
     insert_customer(100)
+
+    # Insert in facts table
+    insert_sale(100)
 
     cur.close()
     conn.close()
