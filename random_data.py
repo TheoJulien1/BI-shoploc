@@ -155,7 +155,7 @@ def insert_gift_purchase(nbRow):
         conn.commit()
 
 
-def retailer_registration(nbRow):
+def insert_retailer_registration(nbRow):
     for i in range(nbRow):
         id_time = get_random_time_id()
         id_shop = get_random_shop_id()
@@ -166,7 +166,7 @@ def retailer_registration(nbRow):
         conn.commit()
 
 
-def vfp_status(nbRow):
+def insert_vfp_status(nbRow):
     for i in range(nbRow):
         id_customer = get_random_customer_id()
         id_time_start = get_random_time_id()
@@ -202,8 +202,8 @@ if __name__ == "__main__":
     insert_customer_log(100)
     insert_consultation(100)
     insert_gift_purchase(100)
-    retailer_registration(100)
-    vfp_status(100)
+    insert_retailer_registration(100)
+    insert_vfp_status(100)
 
     cur.close()
     conn.close()
