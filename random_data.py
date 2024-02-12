@@ -1,4 +1,5 @@
 import random
+from math import ceil, floor
 
 import names
 import psycopg2
@@ -25,7 +26,31 @@ def generate_random_phone_number():
     return phone_number
 
 
-def insert_data():
+def get_random_product_id():
+    cur.execute('SELECT id FROM product ORDER BY random() LIMIT 1')
+    random_id = cur.fetchone()
+    return random_id[0]
+
+
+def get_random_shop_id():
+    cur.execute("SELECT id FROM shop ORDER BY random() LIMIT 1")
+    random_id = cur.fetchone()
+    return random_id[0]
+
+
+def get_random_customer_id():
+    cur.execute('SELECT id FROM customer ORDER BY random() LIMIT 1')
+    random_id = cur.fetchone()
+    return random_id[0]
+
+
+def getProductPrice(idProduct):
+    cur.execute('SELECT cents_price FROM product WHERE id = %s', (idProduct,))
+    productPrice = cur.fetchone()
+    return productPrice[0]
+
+
+def insert_data_dimensions():
     # Insert data in customer
     cur.execute("INSERT INTO customer (first_name, last_name, birth_date, phone_number) "
                 "VALUES (%s, %s, %s, %s)",
@@ -43,24 +68,27 @@ def insert_data():
                 (fake.word(), fake.text(max_nb_chars=100), fake.word()))
     conn.commit()
 
-    week = fake.random_int(min=1, max=52)
-    month = fake.random_int(min=1, max=12)
-    year = fake.random_int(min=2000, max=2024)
-    cur.execute("INSERT INTO time (date, week, week_year,month,month_year,year)"
-                "VALUES (%s, %s, %s,%s, %s, %s)",
-                (fake.date(),
-                 week,
-                 "{:02d}{:04d}".format(week, year),
-                 month,
-                 "{:02d}{:04d}".format(month, year),
-                 year
-                 ))
 
+def insert_data_facts():
+    idProduct = get_random_product_id()
+    price = getProductPrice(idProduct)
+    qty = random.randint(1, 10)
+    total_price = round(qty*price, 2)
+    cur.execute("INSERT INTO sale (id_customer,id_shop,id_product, quantity, total_cents_price,points_earned)"
+                "VALUES (%s,%s,%s,%s,%s,%s)",
+                (get_random_customer_id(),
+                 get_random_shop_id(),
+                 idProduct,
+                 qty,
+                 total_price,
+                 floor(total_price)))
     conn.commit()
 
 
-for i in range(100000):
-    insert_data()
+# for i in range(100):
+# insert_data_dimensions()
+
+insert_data_facts()
 
 cur.close()
 conn.close()
