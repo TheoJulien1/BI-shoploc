@@ -1,3 +1,4 @@
+import datetime
 import random
 from math import floor
 
@@ -71,6 +72,26 @@ def insert_customer(nbRow):
         conn.commit()
 
 
+def insert_time():
+    random_datetime = fake.date_time_this_month()
+    random_datetime_obj = datetime.datetime.strptime(random_datetime.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+    date = random_datetime_obj.date()
+    year, week, _ = random_datetime.isocalendar()
+    month = random_datetime_obj.month
+
+    cur.execute("INSERT INTO time (date,week,week_year,month,month_year,year)"
+                "VALUES (%s, %s, %s, %s,%s,%s)",
+                (
+                    date,
+                    week,
+                    str(week) + "-" + str(year),
+                    month,
+                    str(month) + "-" + str(year),
+                    year
+                ))
+    conn.commit()
+
+
 def insert_sale(nbRow):
     for i in range(nbRow):
         idProduct = get_random_product_id()
@@ -93,6 +114,7 @@ def insert_cutomer_log():
     id_time = get_random_time_id()
     connection_time = random.uniform(10.5, 75.5)
 
+
 if __name__ == "__main__":
     conn = psycopg2.connect(
         dbname="postgres",
@@ -103,6 +125,7 @@ if __name__ == "__main__":
     cur = conn.cursor()
     fake = Faker()
 
+    """
     # Insert in dimension tables
     insert_shop(100)
     insert_product(100)
@@ -110,6 +133,8 @@ if __name__ == "__main__":
 
     # Insert in facts table
     insert_sale(100)
+    """
+    insert_time()
 
     cur.close()
     conn.close()
