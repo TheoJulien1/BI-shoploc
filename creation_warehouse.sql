@@ -43,7 +43,6 @@ CREATE TABLE sale(
     FOREIGN KEY (id_shop) references shop(id)
 
 );
-
 CREATE TABLE customer_log(
     id serial PRIMARY KEY,
     id_customer integer,
@@ -61,11 +60,9 @@ CREATE TABLE consultation(
     FOREIGN KEY (id_time) references time(id),
     FOREIGN KEY (id_product) references product(id)
 );
-
 CREATE TABLE vfp_status(
     id SERIAL PRIMARY KEY,
     id_customer integer,
-    id_time integer,
     start_time integer,
     end_time integer,
     perk_claimed integer,
@@ -74,7 +71,7 @@ CREATE TABLE vfp_status(
     FOREIGN KEY (end_time) references  time(id)
 );
 
-CREATE TABLE gift_purchase(
+    CREATE TABLE gift_purchase(
     id SERIAL PRIMARY KEY,
     id_time integer,
     id_customer integer,
